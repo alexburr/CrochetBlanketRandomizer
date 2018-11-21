@@ -1,11 +1,11 @@
  body { padding: 1em; }
  h1 { margin-bottom: .5em; }
 
-.blanket {
+#blanket {
     box-sizing: border-box;
     width: 100%;
 }
-.blanket.lined {
+#blanket.lined {
     border: 2px solid white;
 }
 
@@ -15,7 +15,7 @@
     width: 100%;
     height: 1em;
 }
-.blanket.lined .blanketRow {
+#blanket.lined .blanketRow {
     border-bottom: 2px solid white;
 }
 
@@ -28,23 +28,3 @@
 #showLinesRow { margin: 0; }
 
 #colorContainer { margin-bottom: 2em; }
-
-.terracotta {
-    background-color: rgb(230, 145, 87);
-}
-.mustard { 
-    background-color: rgb(255, 219, 88);
-}
-.silverblue {
-    background-color: rgb(201,217,229);
-}
-.fern {
-    background-color: rgb(185, 213, 91);
-}
-.midnightblue {
-    background-color: rgb(18,52,87);
-    color: white;
-}
-.fisherman {
-    background-color: rgb(243,237,215);
-}
