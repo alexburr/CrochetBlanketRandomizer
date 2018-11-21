@@ -31,10 +31,10 @@ class RowColor {
 var numberOfColors = 6;
 
 var colors = Object.freeze({
-    1: { name: "terracotta", value: "rgb(226, 114, 91)", displayName: "Terracotta" },
-    2: { name: "mustard", value: "rgb(255, 219, 88)", displayName: "Mustard" },
+    1: { name: "terracotta", value: "rgb(230, 145, 87)", displayName: "Terracotta" },
+    2: { name: "mustard", value: "rgb(255,219,88)", displayName: "Mustard" },
     3: { name: "silverblue", value: "rgb(201,217,229)", displayName: "Silver Blue" },
-    4: { name: "fern", value: "rgb(151,186,118)", displayName: "Fern" },
+    4: { name: "fern", value: "rgb(185, 213, 91)", displayName: "Fern" },
     5: { name: "midnightblue", value: "rgb(18,52,87)", displayName: "Midnight Blue" },
     6: { name: "fisherman", value: "rgb(243,237,215)", displayName: "Fisherman" }
 });
