@@ -38,6 +38,23 @@ class RandomColor extends RandomObject {
     }
 }
 
+class ScreenGrabber {
+    constructor(regionId, downloadButtonId) {
+        this.region = document.getElementById(regionId);
+        this.downloadButton = document.getElementById(downloadButtonId);
+        this.canvas = {};
+    }
+
+    download = function() {
+        this.canvas = html2canvas(this.region).then(function(canvas) {
+            const a = document.createElement('a');
+            a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            a.download = 'blanket.png';
+            a.click();
+        });
+    }
+}
+
 class ClipboardCopier {
     constructor(targetId) { 
         this.target = document.getElementById(targetId);
@@ -94,6 +111,7 @@ const globals = {
     formContainerDivId: "formContainer",
     blanketLinedClass: "lined",
     formulaTextareaId: "formula",
+    downloadButtonId: "downloadButton",
     colors: Object.freeze({
         1: { name: "terracotta", value: "230, 145, 87", textColor: "black", displayName: "Terracotta", active: true, percentage: 14 },
         2: { name: "mustard", value: "255, 219, 88", textColor: "black", displayName: "Mustard", active: true, percentage: 14 },
@@ -273,6 +291,10 @@ var Form = React.createClass({
         e.preventDefault();
         new ClipboardCopier(globals.formulaTextareaId).copy();
     },
+    handleDownloadClick: function(e) {
+        e.preventDefault();
+        new ScreenGrabber(globals.blanketPreviewContainerDivId, globals.downloadButtonId).download();
+    },
     handleFormSubmit: function(e) {
         // RANDOMIZE button will submit the form
         e.preventDefault();
@@ -338,7 +360,10 @@ var Form = React.createClass({
                 <div className="card">
                     <div className="card-body" id="colorContainer"></div>
                 </div>               
-                <h6>Pattern <a className="btn btn-outline-primary btn-sm" href="#" role="button" onClick={this.handleCopyClick}>Copy</a></h6>
+                <h6>Pattern 
+                    <a className="btn btn-outline-primary btn-sm" href="#" role="button" onClick={this.handleCopyClick}>Copy</a>
+                    <a className="btn btn-primary btn-sm" id="downloadButton" href="#" role="button" onClick={this.handleDownloadClick}>Download</a>
+                </h6>
                 <textarea className="form-control" id="formula"></textarea>             
             </form>
         );
