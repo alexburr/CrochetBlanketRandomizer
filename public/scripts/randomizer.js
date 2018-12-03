@@ -31,7 +31,7 @@ class RandomColor extends RandomObject {
         let randomInt = this.getRandomInt(min, max);
         this.color = colors[randomInt];
 
-        if (invalidColor != null && invalidColor == this.color) {
+        if (invalidColor != null && invalidColor == this.color || !this.color.active) {
             this.color = new RandomColor(colors, invalidColor).color;
         }
 
@@ -95,12 +95,14 @@ const globals = {
     blanketLinedClass: "lined",
     formulaTextareaId: "formula",
     colors: Object.freeze({
-        1: { name: "terracotta", value: "230, 145, 87", textColor: "black", displayName: "Terracotta", percentage: 16 },
-        2: { name: "mustard", value: "255, 219, 88", textColor: "black", displayName: "Mustard", percentage: 16 },
-        3: { name: "silverblue", value: "201, 217, 229", textColor: "black", displayName: "Silver Blue", percentage: 16 },
-        4: { name: "fern", value: "185, 213, 91", textColor: "black", displayName: "Fern", percentage: 16 },
-        5: { name: "midnightblue", value: "18, 52, 87", textColor: "white", displayName: "Midnight Blue", percentage: 16 },
-        6: { name: "fisherman", value: "243, 237, 215", textColor: "black", displayName: "Fisherman", percentage: 16 }
+        1: { name: "terracotta", value: "230, 145, 87", textColor: "black", displayName: "Terracotta", active: true, percentage: 14 },
+        2: { name: "mustard", value: "255, 219, 88", textColor: "black", displayName: "Mustard", active: true, percentage: 14 },
+        3: { name: "silverblue", value: "201, 217, 229", textColor: "black", displayName: "Silver Blue", active: true, percentage: 14 },
+        4: { name: "fern", value: "185, 213, 91", textColor: "black", displayName: "Fern", active: true, percentage: 14 },
+        5: { name: "midnightblue", value: "18, 52, 87", textColor: "white", displayName: "Midnight Blue", active: true,percentage: 14 },
+        6: { name: "fisherman", value: "243, 237, 215", textColor: "black", displayName: "Fisherman", active: true, percentage: 14 },
+        7: { name: "taupe", value: "149, 112, 92", textColor: "white", displayName: "Taupe", active: true, percentage: 14 },
+        8: { name: "brick", value: "180, 34, 29", textColor: "white", displayName: "Brick", active: true, percentage: 14 }
     })
 };
 
@@ -175,6 +177,11 @@ var ColorListItemRender = React.createClass({
     getInitialState: function() {
         return this.props.color;
     },
+    handleColorCheckboxClick: function(e) {
+        this.props.color.active = e.target.checked;
+        // Call the parent object's handleColorCheckboxClick function with the selected color
+        this.props.handleColorCheckboxClick(this.props.color);
+    },
     render: function() {
         const color = this.state;
         const style = {
@@ -182,20 +189,36 @@ var ColorListItemRender = React.createClass({
             color: color.textColor
         };
         const className = 'badge badge-pill ' + color.name;
+        const checked = color.active ? "checked" : "";
+        const checkboxId = "checkbox_" + color.name;
         return (
-            <span className={className} style={style}>{color.displayName}</span>
+            <label className={className} style={style} htmlFor={checkboxId}>
+                <input type="checkbox" id={checkboxId} defaultChecked={checked} onChange={this.handleColorCheckboxClick} /> {color.displayName}
+            </label>
         )
     }
 });
 
 var ColorList = React.createClass({
+    handleColorCheckboxClick: function(color) {
+        // Find the selected color in the list and update its "active" state
+        var colorNames = Object.getOwnPropertyNames(this.props.colors);
+        for(let colorName of colorNames) {
+            let colorValue = this.props.colors[colorName];
+            if (colorValue.name == color.name) {
+                colorValue = color;
+            }
+        }
+        
+        this.props.handleColorCheckboxClick(this.props.colors);
+    },
     render: function() {
         const colors = this.props.colors;
         const numberOfColors = Object.keys(colors).length;
         let colorList = [];
         for (var i = 1; i <= numberOfColors; i++ ) {
             const color = colors[i];
-            colorList.push(<ColorListItemRender key={i} color={color} />);
+            colorList.push(<ColorListItemRender key={i} color={color} handleColorCheckboxClick={this.handleColorCheckboxClick} />);
         }
         return (
             <div>{colorList}</div>
@@ -254,6 +277,9 @@ var Form = React.createClass({
         // RANDOMIZE button will submit the form
         e.preventDefault();
         this.displayResults();
+    }, 
+    handleColorCheckboxClick: function(colors) {
+        this.setState({ colors: colors });
     },
     displayResults: function() {
         let textarea = document.getElementById(globals.formulaTextareaId);
@@ -263,7 +289,7 @@ var Form = React.createClass({
             document.getElementById(globals.blanketPreviewContainerDivId)
         );
         ReactDOM.render(
-            <ColorList colors={this.state.colors} />, document.getElementById(globals.colorContainerDivId)
+            <ColorList colors={this.state.colors} handleColorCheckboxClick={this.handleColorCheckboxClick} />, document.getElementById(globals.colorContainerDivId)
         );
     },
     render: function() {
